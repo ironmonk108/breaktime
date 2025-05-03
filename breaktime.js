@@ -294,7 +294,7 @@ export class BreakTime {
                 const speaker = setting("chat-bubble") ? { scene: canvas.scene.id, actor: game.user?.character?.id, alias: game.user?.name } : null;
                 const messageData = {
                     content: message,
-                    type: (setting("chat-bubble") ? CONST.CHAT_MESSAGE_TYPES.IC : CONST.CHAT_MESSAGE_TYPES.OOC),
+                    type: (setting("chat-bubble") ? CONST.CHAT_MESSAGE_STYLES.IC : CONST.CHAT_MESSAGE_STYLES.OOC),
                     speaker
                 };
                 ChatMessage.create(messageData, { chatBubble: setting("chat-bubble") });
@@ -324,7 +324,7 @@ export class BreakTime {
         if (game.user.id == data.userId) {
             let awayData = setting("away");
             let away = awayData.includes(game.user.id);
-            let tool = ui.controls.controls.find(c => c.name == 'token')?.tools.find(t => t.name == 'togglebreak');
+            let tool = ui.controls.controls["tokens"].tools["togglebreak"];
             tool.title = (away ? "BREAKTIME.button.return" : "BREAKTIME.button.title");
             if (tool) tool.active = away;
             ui.controls.render();
@@ -338,8 +338,8 @@ Hooks.once('ready', BreakTime.ready);
 
 Hooks.on("getSceneControlButtons", (controls) => {
     let awayData = setting("away");
-    let tokenControls = controls.find(control => control.name === "token")
-    tokenControls.tools.push({
+    let tokenControls = controls["tokens"];
+    tokenControls.tools["togglebreak"] = {
         name: "togglebreak",
         title: (awayData.includes(game.user.id) ? "BREAKTIME.button.return" : "BREAKTIME.button.title"),
         icon: "fas fa-mug-hot",
@@ -348,10 +348,10 @@ Hooks.on("getSceneControlButtons", (controls) => {
         },
         toggle: true,
         active: setting("away").includes(game.user.id)
-    });
+    };
 });
 
-Hooks.on('renderPlayerList', async (playerList, html, data) => {
+Hooks.on('renderPlayers', async (playerList, html, data) => {
     //BreakTime.getPlayers();
     if (BreakTime.app && BreakTime.app.rendered) {
         BreakTime.app.render(true);
@@ -361,14 +361,14 @@ Hooks.on('renderPlayerList', async (playerList, html, data) => {
         const styles = `flex:0 0 17px;width:17px;height:16px;border:0;margin-top: 3px;margin-right:-5px;`;
         const title = i18n("BREAKTIME.app.playerisaway")
         const i = `<i style="${styles}" class="fas fa-mug-hot" title="${title}"></i>`;
-        html.find(`[data-user-id="${userId}"]`).append(i);
-        html.find(`[data-user-id="${userId}"] .player-active`).css({background:'transparent'});
+        $(html).find(`.player[data-user-id="${userId}"]`).addClass("player-away").append(i);
+        //html.find(`[data-user-id="${userId}"] .player-name`).css({background:'transparent'});
     });
 
     if (setting('show-button') && (game.user.isGM || (!game.user.isGM && setting("paused"))) && $('.breaktime-button', html).length === 0) {
-        $('<h3>').addClass('breaktime-button')
-            .append(`<div><i class="fas fa-coffee"></i> ${i18n("BREAKTIME.app.breaktime")}</div>`)
-            .insertAfter($('h3:last', html))
+        $('<div>').addClass('breaktime-button')
+            .append(`<div><i class="fas fa-coffee" style="margin-right: 4px;"></i> ${i18n("BREAKTIME.app.breaktime")}</div>`)
+            .insertAfter($('#players-active .players-list', html))
             .click(game.user.isGM ? BreakTime.startBreak.bind() : BreakTime.showApp.bind(this, false));
     }
 });

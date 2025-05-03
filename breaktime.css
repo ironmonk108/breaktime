@@ -104,3 +104,16 @@ form .notes.break-start {
 #breaktime-app .window-content footer {
     flex: 0 0 35px;
 }
+
+.breaktime-button {
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-top: 4px;
+}
+
+#players .player.player-away::before {
+    background: transparent;
+}
