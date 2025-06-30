@@ -9,7 +9,10 @@
       "chatback": "Return to the game",
       "playerisaway": "Player is currently away",
       "LeaveAgain": "Leave",
-      "ImBack": "I'm Back"
+      "ImBack": "I'm Back",
+      "SetRemaining": "Set Time Remaining",
+      "BreakWasStartedAt": "Break was started at:",
+      "SetRemainingMessage": "Set the time remaining for this break (minutes)"
     },
     "setting": {
       "hot-keys": {

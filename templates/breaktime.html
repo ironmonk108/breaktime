@@ -1,9 +1,9 @@
 <form class="flexcol" editable="{{editable}}">
     <p class="notes break-start">
-        <span style="line-height: 24px;">Break was started at {{timestart}}.</span>
+        <span style="line-height: 24px;">{{localize 'BREAKTIME.app.BreakWasStartedAt'}} {{timestart}}.</span>
         {{#if gm}}
-        <button type="button" class="clear-remaining"><i class="fas fa-trash"></i></button>
-        <button type="button" class="set-time"><i class="fas fa-clock"></i></button>
+        <button type="button" class="clear-remaining icon fa-solid fa-trash" data-action="clearRemaining"></button>
+        <button type="button" class="set-time icon fa-solid fa-clock" data-action="setTime"></button>
         {{/if}}
     </p>
     {{#if remaining}}
@@ -16,7 +16,7 @@
     <div class="breaktime-container flexcol">
         {{#each players}}
         <div class="breaktime-player {{state}}" data-user-id="{{this.id}}">
-            <div class="breaktime-avatar {{#if (or @root.gm (eq this.id @root.my.id))}}clickable{{/if}}">
+            <div class="breaktime-avatar {{#if (or @root.gm (eq this.id @root.my.id))}}clickable{{/if}}" data-action="clickAvatar">
                 <img src="{{avatar}}" />
             </div>
             <div class="breaktime-details">
@@ -30,7 +30,7 @@
         {{/each}}
     </div>
     <footer class="sheet-footer flexrow">
-        <button id="away-btn" type="button" {{#if (eq my.state "away")}} disabled{{/if}}><i class="fas fa-mug-hot"></i> {{localize 'BREAKTIME.app.LeaveAgain'}}</button>
-        <button id="back-btn" type="button" {{#if (eq my.state "back")}} disabled{{/if}}><i class="fas fa-mug-saucer"></i> {{localize 'BREAKTIME.app.ImBack'}}</button>
+        <button id="away-btn" type="button" {{#if (eq my.state "away")}} disabled{{/if}} data-action="leave"><i class="fas fa-mug-hot"></i> {{localize 'BREAKTIME.app.LeaveAgain'}}</button>
+        <button id="back-btn" type="button" {{#if (eq my.state "back")}} disabled{{/if}} data-action="comeBack"><i class="fas fa-mug-saucer"></i> {{localize 'BREAKTIME.app.ImBack'}}</button>
     </footer>
 </form>

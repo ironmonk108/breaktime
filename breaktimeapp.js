@@ -1,19 +1,38 @@
 import { BreakTime, setting, i18n } from "./breaktime.js";
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
-export class BreakTimeApplication extends Application {
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions,
-            {
-                title: i18n("BREAKTIME.app.title"),
-                id: "breaktime-app",
-                template: "modules/breaktime/templates/breaktime.html",
-                width: 300,
-                height: 'auto',
-                resizable: false,
-            });
-    }
+export class BreakTimeApplication extends HandlebarsApplicationMixin(ApplicationV2) {
+    static DEFAULT_OPTIONS = {
+        id: "breaktime-app",
+        tag: "form",
+        window: {
+            contentClasses: [],
+            icon: "fas fa-coffee",
+            resizable: false,
+            title: "BREAKTIME.app.title",
+        },
+        actions: {
+            clearRemaining: BreakTimeApplication.clearRemaining,
+            setTime: BreakTimeApplication.setTime,
+            leave: BreakTimeApplication.onChangePlayerState.bind(this, 'away', null),
+            comeBack: BreakTimeApplication.onChangePlayerState.bind(this, 'back', null),
+            clickAvatar: BreakTimeApplication._changePlayerState.bind(this, 'back'),
+        },
+        position: {
+            width: 300,
+            height: 'auto',
+        }
+    };
 
-    getData() {
+    static PARTS = {
+        main: {
+            root: true,
+            template: "modules/breaktime/templates/breaktime.html",
+        }
+    };
+
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
         let awayData = setting("away");
         let me = null;
         const players = game.users.contents.filter((el) => el.active).map((el) => {
@@ -33,7 +52,7 @@ export class BreakTimeApplication extends Application {
         let done;
         let remaining = setting("remaining") ? this.getRemainingTime(done, true) : null;
 
-        return foundry.utils.mergeObject(super.getData(), {
+        return foundry.utils.mergeObject(context, {
             players: players,
             my: me,
             gm: game.user.isGM,
@@ -46,31 +65,26 @@ export class BreakTimeApplication extends Application {
         });
     }
 
-    activateListeners(html) {
-        super.activateListeners(html);
-        this.element.find("#back-btn").click(this._changeReturnedState.bind(this, 'back'));
-        this.element.find("#away-btn").click(this._changeReturnedState.bind(this, 'away'));
-
-        $('button.set-time', html).click(this.setTime.bind(this));
-        $('button.clear-remaining', html).click(this.clearRemaining.bind(this))
-
-        if (game.user.isGM) {
-            this.element.find(".breaktime-avatar").click(this._changePlayerState.bind(this, 'back')).contextmenu(this._changePlayerState.bind(this, 'away'));
-        } else {
-            this.element.find(`.breaktime-player[data-user-id="${game.user.id}"] .breaktime-avatar`).click(this._changePlayerState.bind(this, 'back')).contextmenu(this._changePlayerState.bind(this, 'away'));
-        }
+    async _onFirstRender(context, options) {
+        super._onFirstRender(context, options);
 
         if (setting("remaining")) {
             if (this.remainingTimer)
                 window.clearInterval(this.remainingTimer);
             this.remainingTimer = window.setInterval(() => {
                 let done;
-                $('.remaining-timer', html).val(this.getRemainingTime(done));
+                $('.remaining-timer', this.element).val(this.getRemainingTime(done));
                 if (done) {
                     window.clearInterval(this.remainingTimer);
                 }
             }, 1000);
         }
+    }
+
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+
+        $(".breaktime-avatar", this.element).contextmenu(BreakTimeApplication._changePlayerState.bind(BreakTimeApplication, 'away'));
     }
 
     getRemainingTime(done) {
@@ -108,33 +122,39 @@ export class BreakTimeApplication extends Application {
         }
     }
 
-    _changeReturnedState(state) {
-        BreakTime.emit("changeReturned", { userId: game.user.id, state: state });
+    static _changePlayerState(state, event) {
+        let playerId = event.target.closest('.breaktime-player').dataset.userId;
+        if (game.user.isGM || playerId == game.user.id) {
+            this.onChangePlayerState(state, playerId);
+        }
     }
 
-    _changePlayerState(state, event) {
-        let playerId = event.currentTarget.closest('.breaktime-player').dataset.userId;
-        BreakTime.emit("changeReturned", { userId: playerId, state: state });
+    static onChangePlayerState(state, playerId) {
+        BreakTime.emit("changeReturned", { userId: playerId || game.user.id, state: state });
     }
 
-    setTime() {
-        Dialog.confirm({
-            title: "Set Time Remaining",
-            content: `<p class="notes">Set the time remaining for this break (minutes)</p><input type="text" style="float:right; margin-bottom: 10px;text-align: right;width: 150px;" value="${setting("break-time")}"/> `,
-            yes: async (html) => {
-                let value = parseInt($('input', html).val());
-                if (isNaN(value) || value == 0)
-                    await game.settings.set("breaktime", "remaining", null);
-                else {
-                    let remaining = new Date(Date.now() + (value * 60000));
-                    await game.settings.set("breaktime", "remaining", remaining);
+    static setTime() {
+        foundry.applications.api.DialogV2.confirm({
+            window: {
+                title: i18n("BREAKTIME.app.SetRemaining")
+            },
+            content: `<p class="notes">${i18n("BREAKTIME.app.SetRemainingMessage")}</p><input type="text" style="float:right; margin-bottom: 10px;text-align: right;width: 150px;" value="${setting("break-time")}"/> `,
+            yes: {
+                callback: async (event) => {
+                    let value = parseInt($('input', event.currentTarget).val());
+                    if (isNaN(value) || value == 0)
+                        await game.settings.set("breaktime", "remaining", null);
+                    else {
+                        let remaining = new Date(Date.now() + (value * 60000));
+                        await game.settings.set("breaktime", "remaining", remaining);
+                    }
+                    BreakTime.emit("refresh");
                 }
-                BreakTime.emit("refresh");
             }
         });
     }
 
-    async clearRemaining() {
+    static async clearRemaining() {
         await game.settings.set("breaktime", "remaining", 0);
         BreakTime.emit("refresh");
     }

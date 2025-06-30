@@ -1,3 +1,7 @@
+## Version 13.02
+
+Fixing some additional v13 compatibility issues
+
 ## Version 13.01
 
 v13 Compatibility

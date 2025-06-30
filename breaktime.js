@@ -57,8 +57,8 @@ export class BreakTime {
             name: 'BREAKTIME.hotkey.pausekey',
             restricted: true,
             editable: [
-                { key: 'Home', modifiers: [KeyboardManager.MODIFIER_KEYS?.SHIFT] },
-                { key: 'Space', modifiers: [KeyboardManager.MODIFIER_KEYS?.SHIFT] }
+                { key: 'Home', modifiers: [foundry.helpers.interaction.KeyboardManager.MODIFIER_KEYS?.SHIFT] },
+                { key: 'Space', modifiers: [foundry.helpers.interaction.KeyboardManager.MODIFIER_KEYS?.SHIFT] }
             ],
             onDown: () => {
                 if (game.user.isGM)
@@ -77,7 +77,7 @@ export class BreakTime {
             await game.settings.set("breaktime", "paused", true);
             BreakTime.emit("showApp");
 
-            let currentlyPlaying = ui.playlists._playingSounds.map(ps => ps.playing ? ps.uuid : null).filter(p => !!p);
+            let currentlyPlaying = ui.playlists._playing.sounds.map(ps => ps.uuid).filter(p => !!p);
             for (let playing of currentlyPlaying) {
                 let sound = await fromUuid(playing);
                 sound.update({ playing: false, pausedTime: sound.sound.currentTime });
@@ -93,13 +93,13 @@ export class BreakTime {
 
             //BreakTime.showDialog();
             if (setting('auto-pause'))
-                game.togglePause(true, true);
+                game.togglePause(true, { broadcast: true });
         }
     }
 
     static async endBreak() {
         if (setting('auto-pause') && game.paused)
-            game.togglePause(false, true);
+            game.togglePause(false, { broadcast: true });
         await game.settings.set("breaktime", "paused", false);
         await game.settings.set("breaktime", "remaining", null);
         BreakTime.emit("closeApp");
@@ -131,7 +131,7 @@ export class BreakTime {
                 }
             }
 
-            BreakTime.app = new BreakTimeApplication().render(true);
+            BreakTime.app = await new BreakTimeApplication().render(true);
         } else
             BreakTime.app.render(true);
 
@@ -317,7 +317,7 @@ export class BreakTime {
     }
 
     static refreshPlayerUI() {
-        ui.players.render();
+        ui.players.render(true);
     }
 
     static refreshToolbar(data) {
