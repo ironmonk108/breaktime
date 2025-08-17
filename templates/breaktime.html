@@ -6,13 +6,11 @@
         <button type="button" class="set-time icon fa-solid fa-clock" data-action="setTime"></button>
         {{/if}}
     </p>
-    {{#if remaining}}
-    <div class="form-group">
+    <div class="form-group" {{#unless remaining}}style="display:none;"{{/unless}}>
         <div class="form-fields">
             <input class="remaining-timer" style="text-align: center;" type="text" disabled />
         </div>
     </div>
-    {{/if}}
     <div class="breaktime-container flexcol">
         {{#each players}}
         <div class="breaktime-player {{state}}" data-user-id="{{this.id}}">
