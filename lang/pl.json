@@ -1,0 +1,82 @@
+{
+  "BREAKTIME": {
+    "app": {
+      "title": "Break Time!",
+      "breaktime": "Przerwa",
+      "away": "Oddalam się na chwilę.",
+      "back": "Wróciłem.",
+      "chataway": "Oddal się na chwilę",
+      "chatback": "Powrót do gry",
+      "playerisaway": "Gracz jest aktualnie nieobecny",
+      "LeaveAgain": "Odejdź",
+      "ImBack": "Wróciłem",
+      "SetRemaining": "Ustawianie pozostałego czasu",
+      "BreakWasStartedAt": "Przerwa rozpoczęła się o godz.:",
+      "SetRemainingMessage": "Ustaw czas pozostały do zakończenia przerwy (minuty)"
+    },
+    "setting": {
+      "hot-keys": {
+        "name": "Zmiana skrótów klawiszowych",
+        "hint": "Zmiana skrótów klawiszowych używanych przez ten moduł"
+      },
+      "auto-pause": {
+        "name": "Automatyczna pauza",
+        "hint": "Automatyczna pauza podczas otwierania okna Breaktime"
+      },
+      "show-button": {
+        "name": "Pokaż przycisk",
+        "hint": "Pokaż przycisk w oknie listy graczy"
+      },
+      "away-text": {
+        "name": "Wiadomość podczas oddalenia się"
+      },
+      "back-text": {
+        "name": "Wiadomość powrotna"
+      },
+      "slideshow": {
+        "name": "Pokaz slajdów"
+      },
+      "break-sound": {
+        "name": "Dźwięk przerwy",
+        "hint": "Dźwięk odtwarzany po rozpoczęciu przerwy"
+      },
+      "end-break-sound": {
+        "name": "Dźwięk końca przerwy",
+        "hint": "Dźwięk odtwarzany po zakończeniu przerwy"
+      },
+      "volume": {
+        "name": "Głośność",
+        "hint": "Głośność, z jaką odtwarzany jest dźwięk przerwy"
+      },
+      "notify-option": {
+        "name": "Powiadomienie",
+        "hint": "Jak powiadomić innych o swojej nieobecności"
+      },
+      "break-time": {
+        "name": "Domyślny czas",
+        "hint": "Domyślny czas używany jako symbol zastępczy podczas ustawiania czasu"
+      },
+      "chat-bubble": {
+        "name": "Dymek tekstowy",
+        "hint": "Powiadamiaj także w dymku czatu"
+      },
+      "break-playlist": {
+        "name": "Playlista podczas przerwy",
+        "hint": "Lista odtwarzania do odtworzenia po zainicjowaniu przerwy"
+      },
+      "auto-start-time": {
+        "name": "Automatyczna przerwa",
+        "hint": "Automatyczne uruchamianie licznika czasu po rozpoczęciu przerwy"
+      }
+    },
+    "hotkey": {
+      "label": "Czas przerwy, klawisz pauzy",
+      "description": "Użyj tego przycisku, aby aktywować BreakTime",
+      "pausekey": "Klawisz pauzy"
+    },
+    "button": {
+      "title": "Oddal się na chwilę",
+      "return":  "Powrót z przerwy"
+    }
+  }
+}
