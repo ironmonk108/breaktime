@@ -72,11 +72,12 @@
     "hotkey": {
       "label": "BreakTime, Pause Key",
       "description": "Use this key to activate BreakTime",
-      "pausekey": "Pause Key"
+      "pausekey": "Pause Key",
+      "toggleaway": "Toggle Away Status"
     },
     "button": {
       "title": "Step Away for a minute",
-      "return":  "Return from break"
+      "return": "Return from break"
     }
   }
 }

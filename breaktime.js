@@ -28,6 +28,8 @@ export class BreakTime {
         // init socket
         game.socket.on(BreakTime.SOCKET, BreakTime.onMessage);
         BreakTime.registerHotKeys();
+
+        game.BreakTime = BreakTime;
     }
 
     static async setup() {
@@ -63,6 +65,15 @@ export class BreakTime {
             onDown: () => {
                 if (game.user.isGM)
                     BreakTime.startBreak();
+                return true;
+            }
+        });
+        game.keybindings.register('breaktime', 'toggle-away', {
+            name: 'BREAKTIME.hotkey.toggleaway',
+            editable: [],
+            onDown: () => {
+                let awayData = setting("away");
+                BreakTime.emit("adjustStatus", { away: !awayData.includes(game.user.id) });
                 return true;
             }
         });
