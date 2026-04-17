@@ -1,0 +1,83 @@
+{
+  "BREAKTIME": {
+    "app": {
+      "title": "쉬는 시간입니다!",
+      "breaktime": "휴식하기",
+      "away": "잠시 자리를 비웁니다.",
+      "back": "돌아왔습니다.",
+      "chataway": "잠시 자리 비우기",
+      "chatback": "게임으로 복귀",
+      "playerisaway": "플레이어가 현재 자리 비움 상태입니다.",
+      "LeaveAgain": "자리 비움",
+      "ImBack": "복귀",
+      "SetRemaining": "남은 시간 설정",
+      "BreakWasStartedAt": "휴식 시작 시간:",
+      "SetRemainingMessage": "이번 휴식의 남은 시간을 설정하세요 (분)"
+    },
+    "setting": {
+      "hot-keys": {
+        "name": "단축키 변경",
+        "hint": "이 모듈에서 사용하는 단축키를 변경합니다."
+      },
+      "auto-pause": {
+        "name": "자동 일시정지",
+        "hint": "휴식 시간 창을 열 때 자동으로 게임을 일시정지합니다."
+      },
+      "show-button": {
+        "name": "버튼 표시",
+        "hint": "플레이어 목록 창에 버튼을 표시합니다."
+      },
+      "away-text": {
+        "name": "자리 비움 메시지"
+      },
+      "back-text": {
+        "name": "복귀 메시지"
+      },
+      "slideshow": {
+        "name": "슬라이드쇼"
+      },
+      "break-sound": {
+        "name": "휴식 알림음",
+        "hint": "휴식이 시작될 때 재생할 소리입니다."
+      },
+      "end-break-sound": {
+        "name": "휴식 종료 알림음",
+        "hint": "휴식 시간이 끝났을 때 재생할 소리입니다."
+      },
+      "volume": {
+        "name": "음량",
+        "hint": "휴식 시간 알림음의 재생 음량입니다."
+      },
+      "notify-option": {
+        "name": "알림 설정",
+        "hint": "자리를 비웠을 때 다른 사람에게 알리는 방식입니다."
+      },
+      "break-time": {
+        "name": "기본 시간",
+        "hint": "시간 설정 시 표시될 기본 시간(placeholder)입니다."
+      },
+      "chat-bubble": {
+        "name": "말풍선",
+        "hint": "말풍선으로도 알림을 표시합니다."
+      },
+      "break-playlist": {
+        "name": "휴식 재생목록",
+        "hint": "휴식이 시작될 때 재생할 재생목록입니다."
+      },
+      "auto-start-time": {
+        "name": "휴식 타이머 자동 시작",
+        "hint": "휴식이 시작되면 자동으로 타이머를 시작합니다."
+      }
+    },
+    "hotkey": {
+      "label": "BreakTime, 일시정지 키",
+      "description": "BreakTime을 활성화하려면 이 키를 사용하세요.",
+      "pausekey": "일시정지 키",
+      "toggleaway": "자리 비움 상태 토글"
+    },
+    "button": {
+      "title": "잠시 자리 비우기",
+      "return": "휴식에서 복귀"
+    }
+  }
+}
