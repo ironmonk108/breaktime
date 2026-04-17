@@ -54,6 +54,15 @@ export const registerSettings = function () {
 		type: Boolean,
 	});
 
+	game.settings.register(modulename, "twenty-four-hour", {
+		name: i18n("BREAKTIME.setting.twenty-four-hour.name"),
+		hint: i18n("BREAKTIME.setting.twenty-four-hour.hint"),
+		scope: "client",
+		config: true,
+		default: false,
+		type: Boolean,
+	});
+
 	game.settings.register(modulename, "show-button", {
 		name: i18n("BREAKTIME.setting.show-button.name"),
 		hint: i18n("BREAKTIME.setting.show-button.hint"),

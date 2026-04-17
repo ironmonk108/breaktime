@@ -51,15 +51,16 @@ export class BreakTimeApplication extends HandlebarsApplicationMixin(Application
 
         let done;
         let remaining = setting("remaining") ? this.getRemainingTime(done, true) : null;
+        this.setTimer();
 
         return foundry.utils.mergeObject(context, {
             players: players,
             my: me,
             gm: game.user.isGM,
             timestart: new Date(setting("start")).toLocaleTimeString('en-US', {
+                hour12: !setting("twenty-four-hour"),
                 hour: "numeric",
-                minute: "numeric",
-                second: "numeric"
+                minute: "2-digit"
             }),
             remaining: remaining
         });
@@ -69,16 +70,20 @@ export class BreakTimeApplication extends HandlebarsApplicationMixin(Application
         super._onFirstRender(context, options);
 
         if (setting("remaining")) {
-            if (this.remainingTimer)
-                window.clearInterval(this.remainingTimer);
-            this.remainingTimer = window.setInterval(() => {
-                let done;
-                $('.remaining-timer', this.element).val(this.getRemainingTime(done));
-                if (done) {
-                    window.clearInterval(this.remainingTimer);
-                }
-            }, 1000);
+            this.setTimer();
         }
+    }
+
+    setTimer(remaining) {
+        if (this.remainingTimer)
+            window.clearInterval(this.remainingTimer);
+        this.remainingTimer = window.setInterval(() => {
+            let done;
+            $('.remaining-timer', this.element).val(this.getRemainingTime(done));
+            if (done) {
+                window.clearInterval(this.remainingTimer);
+            }
+        }, 1000);
     }
 
     async _onRender(context, options) {
@@ -113,12 +118,11 @@ export class BreakTimeApplication extends HandlebarsApplicationMixin(Application
                     }
                 });
             }
-            return "Break is over";
+            return i18n("BREAKTIME.app.BreakIsOver");
         } else {
-            const switchover = 300;
-            let min = diff > switchover ? Math.ceil(diff / 60) : Math.floor(diff / 60);
-            let sec = (diff > switchover ? null : diff % 60)
-            return `Returning in: ${min ? min : ""}${sec != null ? (min ? ":" : "") + String(sec).padStart(2, '0') + (min ? " min" : " sec") : " min"}`;
+            let min = Math.floor(diff / 60);
+            let sec = diff % 60;
+            return `${i18n("BREAKTIME.app.ReturningIn")} ${min ? min : ""}${sec != null ? (min ? ":" : "") + String(sec).padStart(2, '0') + (min ? " min" : " sec") : " min"}`;
         }
     }
 
@@ -161,8 +165,9 @@ export class BreakTimeApplication extends HandlebarsApplicationMixin(Application
 
     async close(options = {}) {
         super.close(options);
-        if (game.user.isGM)
+        if (game.user.isGM) {
             BreakTime.endBreak();
+        }
         else {
             if (options.ignore !== true) BreakTime.emit("changeReturned", { state: "back" });
 

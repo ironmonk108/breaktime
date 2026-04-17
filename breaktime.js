@@ -89,11 +89,15 @@ export class BreakTime {
             BreakTime.emit("showApp");
 
             let currentlyPlaying = ui.playlists._playing.sounds.map(ps => ps.uuid).filter(p => !!p);
+            let currentSounds = [];
             for (let playing of currentlyPlaying) {
                 let sound = await fromUuid(playing);
-                sound.update({ playing: false, pausedTime: sound.sound.currentTime });
+                if (sound.playing) {
+                    currentSounds.push(playing);
+                    sound.update({ playing: false, pausedTime: sound.sound.currentTime });
+                }
             }
-            await game.settings.set("breaktime", "currently-playing", currentlyPlaying);
+            await game.settings.set("breaktime", "currently-playing", currentSounds);
 
             if (setting("break-playlist")) {
                 const playlist = game.playlists.get(setting("break-playlist"));
@@ -109,6 +113,29 @@ export class BreakTime {
     }
 
     static async endBreak() {
+        // If there's still time remaining then the GM ended the break early, check to see if there's a sound to play
+        if (!BreakTime.endPlayed && BreakTime.canPlayEnd && setting("end-break-sound") && setting("remaining")) {
+            BreakTime.endPlayed = true;
+            BreakTime.getBreakSounds("end-break-sound").then((audiofiles) => {
+                if (audiofiles.length > 0) {
+                    const audiofile = audiofiles[Math.floor(Math.random() * audiofiles.length)];
+
+                    let volume = (setting('volume') / 100);
+                    foundry.audio.AudioHelper.play({ src: audiofile, volume: volume, loop: false }).then((soundfile) => {
+                        BreakTime.endsound = soundfile;
+                        soundfile.addEventListener("end", () => {
+                            delete BreakTime.endsound;
+                        });
+                        soundfile.addEventListener("stop", () => {
+                            delete BreakTime.endsound;
+                        });
+                        soundfile.effectiveVolume = volume;
+                        return soundfile;
+                    });
+                }
+            });
+        }
+
         if (setting('auto-pause') && game.paused)
             game.togglePause(false, { broadcast: true });
         await game.settings.set("breaktime", "paused", false);
@@ -305,10 +332,10 @@ export class BreakTime {
                 const speaker = setting("chat-bubble") ? { scene: canvas.scene.id, actor: game.user?.character?.id, alias: game.user?.name } : null;
                 const messageData = {
                     content: message,
-                    type: (setting("chat-bubble") ? CONST.CHAT_MESSAGE_STYLES.IC : CONST.CHAT_MESSAGE_STYLES.OOC),
+                    style: (setting("chat-bubble") ? CONST.CHAT_MESSAGE_STYLES.IC : CONST.CHAT_MESSAGE_STYLES.OOC),
                     speaker
                 };
-                ChatMessage.create(messageData, { chatBubble: setting("chat-bubble") });
+                foundry.documents.ChatMessage.implementation.create(messageData, { chatBubble: setting("chat-bubble") });
 
                 let tkn = canvas.scene.tokens.find(t => t.actor?.id == game.user?.character?.id);
                 await canvas.hud.bubbles.say(tkn?._object, message);
@@ -354,8 +381,8 @@ Hooks.on("getSceneControlButtons", (controls) => {
         name: "togglebreak",
         title: (awayData.includes(game.user.id) ? "BREAKTIME.button.return" : "BREAKTIME.button.title"),
         icon: "fas fa-mug-hot",
-        onClick: (away, event) => {
-            BreakTime.emit("adjustStatus", { away: away });
+        onChange: (event, toggled) => {
+            BreakTime.emit("adjustStatus", { away: toggled });
         },
         toggle: true,
         active: setting("away").includes(game.user.id)

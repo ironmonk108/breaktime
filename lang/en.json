@@ -12,7 +12,9 @@
       "ImBack": "I'm Back",
       "SetRemaining": "Set Time Remaining",
       "BreakWasStartedAt": "Break was started at:",
-      "SetRemainingMessage": "Set the time remaining for this break (minutes)"
+      "SetRemainingMessage": "Set the time remaining for this break (minutes)",
+      "BreakIsOver": "Break is over!",
+      "ReturningIn": "Returning in:"
     },
     "setting": {
       "hot-keys": {
@@ -67,6 +69,10 @@
       "auto-start-time": {
         "name": "Auto Break Time",
         "hint": "Automatically start the timer when break is started"
+      },
+      "twenty-four-hour": {
+        "name": "24 Hour Time",
+        "hint": "Display time in 24 hour format instead of 12 hour"
       }
     },
     "hotkey": {

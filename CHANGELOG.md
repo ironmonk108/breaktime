@@ -1,3 +1,21 @@
+## Version 14.01
+
+v14 Compatibility
+
+Fixed issue, where all playlist would resume playing, not just the ones that were currently playing when breaktime starts.
+
+Added end break sound playing when the GM ends the break early
+
+Fixed issue with the Breaktime dialog not starting the timer appropriately
+
+Added the option to show as 24 hour time
+
+Show seconds counting down regardless of how many minutes are left.
+
+Added Korean translation, thank you Akasha0513
+
+Updated polish translation, thank you Lioheart
+
 ## Version 13.03
 
 Added BreakTime to the Game so that it can be accessed via a Macro
